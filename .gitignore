@@ -1,0 +1,36 @@
+# Compiled binary
+/target/
+
+# Cargo.lock for library projects
+# Cargo.lock
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# User-specific setup files (keep the example templates)
+set_env.ps1
+set_env.sh
+set_env.bat
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Configuration files that might contain secrets
+config.toml
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.temp
