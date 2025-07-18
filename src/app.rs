@@ -161,11 +161,6 @@ impl AppState {
         Ok(())
     }
 
-    pub fn is_waiting_for_response(&self) -> bool {
-        self.app.current_tab()
-            .map(|tab| tab.is_waiting)
-            .unwrap_or(false)
-    }
 
     pub fn find_client_for_provider(&self, provider: &LLMProvider) -> Result<Arc<dyn LLMClient>> {
         self.llm_clients

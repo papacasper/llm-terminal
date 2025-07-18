@@ -1,5 +1,5 @@
 use crate::models::{LLMProvider, Message, MessageRole};
-use anyhow::{Context, Result};
+use anyhow::Result;
 use reqwest::Client;
 use std::sync::Arc;
 

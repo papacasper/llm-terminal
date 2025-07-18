@@ -1,7 +1,7 @@
 use super::client::{HttpLLMClient, LLMClient, messages_to_api_format};
 use crate::models::{LLMProvider, Message};
 use anyhow::{anyhow, Context, Result};
-use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, CONTENT_TYPE};
+use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE};
 use serde_json::json;
 
 pub struct ClaudeClient {

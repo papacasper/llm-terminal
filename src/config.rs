@@ -1,4 +1,4 @@
-use crate::models::{LLMProvider, Settings};
+use crate::models::Settings;
 use anyhow::{Context, Result};
 use std::path::PathBuf;
 
@@ -34,22 +34,6 @@ impl Config {
         settings
     }
 
-    pub fn save_settings(settings: &Settings) -> Result<()> {
-        let config_path = Self::get_config_path()?;
-        
-        if let Some(parent) = config_path.parent() {
-            std::fs::create_dir_all(parent)
-                .context("Failed to create config directory")?;
-        }
-
-        let toml_string = toml::to_string(settings)
-            .context("Failed to serialize settings")?;
-
-        std::fs::write(&config_path, toml_string)
-            .context("Failed to write config file")?;
-
-        Ok(())
-    }
 
     fn load_from_file() -> Result<Settings> {
         let config_path = Self::get_config_path()?;
@@ -78,6 +62,7 @@ impl Config {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::models::LLMProvider;
 
     #[test]
     fn test_default_settings() {

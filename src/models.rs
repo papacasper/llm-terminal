@@ -57,28 +57,9 @@ impl Message {
     }
 }
 
-#[derive(Debug, Clone)]
-pub struct ConversationBlock {
-    pub messages: Vec<Message>,
-    pub is_complete: bool,
-}
-
-impl ConversationBlock {
-    pub fn new() -> Self {
-        Self {
-            messages: Vec::new(),
-            is_complete: true,
-        }
-    }
-
-    pub fn add_message(&mut self, message: Message) {
-        self.messages.push(message);
-    }
-}
 
 #[derive(Debug, Clone)]
 pub struct ChatTab {
-    pub id: Uuid,
     pub title: String,
     pub provider: LLMProvider,
     pub messages: Vec<Message>,
@@ -88,7 +69,6 @@ pub struct ChatTab {
 impl ChatTab {
     pub fn new(title: String, provider: LLMProvider) -> Self {
         Self {
-            id: Uuid::new_v4(),
             title,
             provider,
             messages: Vec::new(),
