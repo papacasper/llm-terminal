@@ -25,12 +25,12 @@ impl ClaudeClient {
         Ok(headers)
     }
 
-    async fn make_request(&self, messages: &[Message]) -> Result<String> {
+    async fn make_request(&self, messages: &[Message], model: &str) -> Result<String> {
         let headers = self.create_headers()?;
         let api_messages = messages_to_api_format(messages);
 
         let request_body = json!({
-            "model": LLMProvider::Claude.model(),
+            "model": model,
             "max_tokens": 4096,
             "messages": api_messages
         });
@@ -72,12 +72,12 @@ impl ClaudeClient {
 
 #[async_trait::async_trait]
 impl LLMClient for ClaudeClient {
-    async fn send_message(&self, messages: &[Message]) -> Result<String> {
+    async fn send_message(&self, messages: &[Message], model: &str) -> Result<String> {
         if messages.is_empty() {
             return Err(anyhow!("No messages to send"));
         }
 
-        self.make_request(messages).await
+        self.make_request(messages, model).await
     }
 
     fn provider(&self) -> LLMProvider {

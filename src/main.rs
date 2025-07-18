@@ -1,4 +1,5 @@
 mod app;
+mod code_executor;
 mod config;
 mod llm;
 mod models;
@@ -115,12 +116,12 @@ async fn handle_key_event(
             app_state.app.input_buffer.clear();
             
             // Add user message to current tab and get provider info
-            let (provider, messages) = {
+            let (provider, model, messages) = {
                 if let Some(current_tab) = app_state.app.current_tab_mut() {
                     current_tab.add_message(models::Message::user(message.clone()));
                     current_tab.set_waiting(true);
                     
-                    (current_tab.provider.clone(), current_tab.messages.clone())
+                    (current_tab.provider.clone(), current_tab.model.clone(), current_tab.messages.clone())
                 } else {
                     return Ok(());
                 }
@@ -133,7 +134,7 @@ async fn handle_key_event(
                 
                 // Send message asynchronously
                 tokio::spawn(async move {
-                    let result = client_clone.send_message(&messages).await;
+                    let result = client_clone.send_message(&messages, &model).await;
                     let _ = response_tx_clone.send(result).await;
                 });
             } else {

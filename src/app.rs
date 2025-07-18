@@ -1,3 +1,4 @@
+use crate::code_executor::CodeExecutor;
 use crate::config::Config;
 use crate::llm::{ClaudeClient, LLMClient, OpenAIClient};
 use crate::models::{App, AppMode, LLMProvider, Message};
@@ -9,6 +10,7 @@ use tokio::sync::mpsc;
 pub struct AppState {
     pub app: App,
     pub llm_clients: Vec<Arc<dyn LLMClient>>,
+    pub code_executor: CodeExecutor,
 }
 
 impl AppState {
@@ -24,6 +26,7 @@ impl AppState {
         Self {
             app: app_with_settings,
             llm_clients,
+            code_executor: CodeExecutor::new(30), // 30 second timeout
         }
     }
 
@@ -110,8 +113,8 @@ impl AppState {
     }
 
     fn send_message(&mut self, content: String) -> Result<()> {
-        // Get provider and add user message
-        let (provider, messages) = {
+        // Get provider, model, and add user message
+        let (provider, model, messages) = {
             let current_tab = self.app.current_tab_mut()
                 .ok_or_else(|| anyhow!("No current tab"))?;
 
@@ -120,7 +123,7 @@ impl AppState {
             current_tab.add_message(user_message);
             current_tab.set_waiting(true);
 
-            (current_tab.provider.clone(), current_tab.messages.clone())
+            (current_tab.provider.clone(), current_tab.model.clone(), current_tab.messages.clone())
         };
 
         // Find the appropriate client for this tab's provider
@@ -130,7 +133,7 @@ impl AppState {
         // Send message in background
         let (_tx, _rx) = mpsc::channel(1);
         tokio::spawn(async move {
-            let result = client_clone.send_message(&messages).await;
+            let result = client_clone.send_message(&messages, &model).await;
             let _ = _tx.send(result).await;
         });
 

@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 #[async_trait::async_trait]
 pub trait LLMClient: Send + Sync {
-    async fn send_message(&self, messages: &[Message]) -> Result<String>;
+    async fn send_message(&self, messages: &[Message], model: &str) -> Result<String>;
     fn provider(&self) -> LLMProvider;
 }
 

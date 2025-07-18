@@ -8,6 +8,22 @@ pub enum LLMProvider {
     OpenAI,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub enum ClaudeModel {
+    Sonnet35,
+    Sonnet3,
+    Haiku3,
+    Opus3,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub enum OpenAIModel {
+    GPT4o,
+    GPT4oMini,
+    GPT4Turbo,
+    GPT35Turbo,
+}
+
 impl LLMProvider {
     pub fn as_str(&self) -> &'static str {
         match self {
@@ -16,10 +32,67 @@ impl LLMProvider {
         }
     }
 
-    pub fn model(&self) -> &'static str {
+    pub fn default_model(&self) -> String {
         match self {
-            LLMProvider::Claude => "claude-3-5-sonnet-20241022",
-            LLMProvider::OpenAI => "gpt-4o",
+            LLMProvider::Claude => ClaudeModel::Sonnet35.model_id(),
+            LLMProvider::OpenAI => OpenAIModel::GPT4o.model_id(),
+        }
+    }
+
+    pub fn available_models(&self) -> Vec<String> {
+        match self {
+            LLMProvider::Claude => vec![
+                ClaudeModel::Sonnet35.model_id(),
+                ClaudeModel::Sonnet3.model_id(),
+                ClaudeModel::Haiku3.model_id(),
+                ClaudeModel::Opus3.model_id(),
+            ],
+            LLMProvider::OpenAI => vec![
+                OpenAIModel::GPT4o.model_id(),
+                OpenAIModel::GPT4oMini.model_id(),
+                OpenAIModel::GPT4Turbo.model_id(),
+                OpenAIModel::GPT35Turbo.model_id(),
+            ],
+        }
+    }
+}
+
+impl ClaudeModel {
+    pub fn model_id(&self) -> String {
+        match self {
+            ClaudeModel::Sonnet35 => "claude-3-5-sonnet-20241022".to_string(),
+            ClaudeModel::Sonnet3 => "claude-3-sonnet-20240229".to_string(),
+            ClaudeModel::Haiku3 => "claude-3-haiku-20240307".to_string(),
+            ClaudeModel::Opus3 => "claude-3-opus-20240229".to_string(),
+        }
+    }
+
+    pub fn display_name(&self) -> &'static str {
+        match self {
+            ClaudeModel::Sonnet35 => "Claude 3.5 Sonnet",
+            ClaudeModel::Sonnet3 => "Claude 3 Sonnet",
+            ClaudeModel::Haiku3 => "Claude 3 Haiku",
+            ClaudeModel::Opus3 => "Claude 3 Opus",
+        }
+    }
+}
+
+impl OpenAIModel {
+    pub fn model_id(&self) -> String {
+        match self {
+            OpenAIModel::GPT4o => "gpt-4o".to_string(),
+            OpenAIModel::GPT4oMini => "gpt-4o-mini".to_string(),
+            OpenAIModel::GPT4Turbo => "gpt-4-turbo".to_string(),
+            OpenAIModel::GPT35Turbo => "gpt-3.5-turbo".to_string(),
+        }
+    }
+
+    pub fn display_name(&self) -> &'static str {
+        match self {
+            OpenAIModel::GPT4o => "GPT-4o",
+            OpenAIModel::GPT4oMini => "GPT-4o Mini",
+            OpenAIModel::GPT4Turbo => "GPT-4 Turbo",
+            OpenAIModel::GPT35Turbo => "GPT-3.5 Turbo",
         }
     }
 }
@@ -62,18 +135,31 @@ impl Message {
 pub struct ChatTab {
     pub title: String,
     pub provider: LLMProvider,
+    pub model: String,
     pub messages: Vec<Message>,
     pub is_waiting: bool,
+    pub code_execution_enabled: bool,
 }
 
 impl ChatTab {
     pub fn new(title: String, provider: LLMProvider) -> Self {
+        let model = provider.default_model();
         Self {
             title,
-            provider,
+            provider: provider.clone(),
+            model,
             messages: Vec::new(),
             is_waiting: false,
+            code_execution_enabled: true,
         }
+    }
+
+    pub fn set_model(&mut self, model: String) {
+        self.model = model;
+    }
+
+    pub fn toggle_code_execution(&mut self) {
+        self.code_execution_enabled = !self.code_execution_enabled;
     }
 
     pub fn add_message(&mut self, message: Message) {
