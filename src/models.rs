@@ -34,24 +34,28 @@ impl LLMProvider {
 
     pub fn default_model(&self) -> String {
         match self {
+            // Claude 3.5 Sonnet is currently the best for coding tasks
             LLMProvider::Claude => ClaudeModel::Sonnet35.model_id(),
+            // GPT-4o is OpenAI's most capable model for coding
             LLMProvider::OpenAI => OpenAIModel::GPT4o.model_id(),
         }
     }
 
     pub fn available_models(&self) -> Vec<String> {
         match self {
+            // Ordered by coding capability (best first)
             LLMProvider::Claude => vec![
-                ClaudeModel::Sonnet35.model_id(),
-                ClaudeModel::Sonnet3.model_id(),
-                ClaudeModel::Haiku3.model_id(),
-                ClaudeModel::Opus3.model_id(),
+                ClaudeModel::Sonnet35.model_id(),  // Best for coding
+                ClaudeModel::Opus3.model_id(),     // Most capable, slower
+                ClaudeModel::Sonnet3.model_id(),   // Good balance
+                ClaudeModel::Haiku3.model_id(),    // Fastest, lighter tasks
             ],
+            // Ordered by coding capability (best first)
             LLMProvider::OpenAI => vec![
-                OpenAIModel::GPT4o.model_id(),
-                OpenAIModel::GPT4oMini.model_id(),
-                OpenAIModel::GPT4Turbo.model_id(),
-                OpenAIModel::GPT35Turbo.model_id(),
+                OpenAIModel::GPT4o.model_id(),     // Best overall
+                OpenAIModel::GPT4Turbo.model_id(), // Good for complex tasks
+                OpenAIModel::GPT4oMini.model_id(), // Cost-effective
+                OpenAIModel::GPT35Turbo.model_id(),// Legacy, still capable
             ],
         }
     }

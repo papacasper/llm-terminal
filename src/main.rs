@@ -316,12 +316,35 @@ fn render_input_area(f: &mut Frame, app: &models::App, area: Rect) {
 fn render_status_bar(f: &mut Frame, app: &models::App, area: Rect) {
     let current_tab = app.current_tab();
     let status_text = if let Some(tab) = current_tab {
-        if tab.is_waiting {
-            format!("Waiting for {} response... | Tab: {} | Press Ctrl+, for settings", 
-                   tab.provider.as_str(), app.current_tab + 1)
+        // Extract model name for better display
+        let model_display = if tab.model.contains("claude-3-5-sonnet") {
+            "Claude 3.5 Sonnet"
+        } else if tab.model.contains("claude-3-opus") {
+            "Claude 3 Opus"
+        } else if tab.model.contains("claude-3-sonnet") {
+            "Claude 3 Sonnet"
+        } else if tab.model.contains("claude-3-haiku") {
+            "Claude 3 Haiku"
+        } else if tab.model.contains("gpt-4o-mini") {
+            "GPT-4o Mini"
+        } else if tab.model.contains("gpt-4o") {
+            "GPT-4o"
+        } else if tab.model.contains("gpt-4-turbo") {
+            "GPT-4 Turbo"
+        } else if tab.model.contains("gpt-3.5-turbo") {
+            "GPT-3.5 Turbo"
         } else {
-            format!("Ready | Provider: {} | Tab: {} | Press Ctrl+, for settings", 
-                   tab.provider.as_str(), app.current_tab + 1)
+            &tab.model
+        };
+        
+        let code_exec_status = if tab.code_execution_enabled { "🔧" } else { "🚫" };
+        
+        if tab.is_waiting {
+            format!("⏳ Waiting for response... | {} {} | Tab: {} | Ctrl+, settings", 
+                   model_display, code_exec_status, app.current_tab + 1)
+        } else {
+            format!("✅ Ready | {} {} | Tab: {} | Ctrl+, settings", 
+                   model_display, code_exec_status, app.current_tab + 1)
         }
     } else {
         "No active tab".to_string()
