@@ -10,10 +10,11 @@ pub enum LLMProvider {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum ClaudeModel {
-    Sonnet35,
-    Sonnet3,
-    Haiku3,
-    Opus3,
+    Sonnet35,      // Latest Claude 3.5 Sonnet (best for coding)
+    Haiku35,       // Claude 3.5 Haiku (faster, still capable)
+    Opus3,         // Claude 3 Opus (most capable for complex tasks)
+    Sonnet3,       // Claude 3 Sonnet (good balance)
+    Haiku3,        // Claude 3 Haiku (fastest, lighter tasks)
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -43,12 +44,13 @@ impl LLMProvider {
 
     pub fn available_models(&self) -> Vec<String> {
         match self {
-            // Ordered by coding capability (best first)
+            // Ordered by coding capability and recency (best first)
             LLMProvider::Claude => vec![
-                ClaudeModel::Sonnet35.model_id(),  // Best for coding
-                ClaudeModel::Opus3.model_id(),     // Most capable, slower
+                ClaudeModel::Sonnet35.model_id(),  // Best for coding (latest)
+                ClaudeModel::Haiku35.model_id(),   // Fast and capable (latest)
+                ClaudeModel::Opus3.model_id(),     // Most capable for complex tasks
                 ClaudeModel::Sonnet3.model_id(),   // Good balance
-                ClaudeModel::Haiku3.model_id(),    // Fastest, lighter tasks
+                ClaudeModel::Haiku3.model_id(),    // Legacy fast model
             ],
             // Ordered by coding capability (best first)
             LLMProvider::OpenAI => vec![
@@ -64,19 +66,24 @@ impl LLMProvider {
 impl ClaudeModel {
     pub fn model_id(&self) -> String {
         match self {
+            // Latest models (as of 2024-2025)
             ClaudeModel::Sonnet35 => "claude-3-5-sonnet-20241022".to_string(),
+            ClaudeModel::Haiku35 => "claude-3-5-haiku-20241022".to_string(),
+            
+            // Claude 3 series (stable)
+            ClaudeModel::Opus3 => "claude-3-opus-20240229".to_string(),
             ClaudeModel::Sonnet3 => "claude-3-sonnet-20240229".to_string(),
             ClaudeModel::Haiku3 => "claude-3-haiku-20240307".to_string(),
-            ClaudeModel::Opus3 => "claude-3-opus-20240229".to_string(),
         }
     }
 
     pub fn display_name(&self) -> &'static str {
         match self {
-            ClaudeModel::Sonnet35 => "Claude 3.5 Sonnet",
+            ClaudeModel::Sonnet35 => "Claude 3.5 Sonnet (Latest)",
+            ClaudeModel::Haiku35 => "Claude 3.5 Haiku (Latest)",
+            ClaudeModel::Opus3 => "Claude 3 Opus",
             ClaudeModel::Sonnet3 => "Claude 3 Sonnet",
             ClaudeModel::Haiku3 => "Claude 3 Haiku",
-            ClaudeModel::Opus3 => "Claude 3 Opus",
         }
     }
 }

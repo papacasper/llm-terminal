@@ -318,17 +318,19 @@ fn render_status_bar(f: &mut Frame, app: &models::App, area: Rect) {
     let status_text = if let Some(tab) = current_tab {
         // Extract model name for better display
         let model_display = if tab.model.contains("claude-3-5-sonnet") {
-            "Claude 3.5 Sonnet"
+            "Claude 3.5 Sonnet 🥇"  // Best for coding
+        } else if tab.model.contains("claude-3-5-haiku") {
+            "Claude 3.5 Haiku ⚡"   // Latest fast model
         } else if tab.model.contains("claude-3-opus") {
-            "Claude 3 Opus"
+            "Claude 3 Opus 🧠"      // Most capable
         } else if tab.model.contains("claude-3-sonnet") {
             "Claude 3 Sonnet"
         } else if tab.model.contains("claude-3-haiku") {
             "Claude 3 Haiku"
         } else if tab.model.contains("gpt-4o-mini") {
-            "GPT-4o Mini"
+            "GPT-4o Mini 💰"        // Cost-effective
         } else if tab.model.contains("gpt-4o") {
-            "GPT-4o"
+            "GPT-4o 🚀"             // OpenAI's best
         } else if tab.model.contains("gpt-4-turbo") {
             "GPT-4 Turbo"
         } else if tab.model.contains("gpt-3.5-turbo") {
