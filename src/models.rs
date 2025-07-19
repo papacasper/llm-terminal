@@ -32,6 +32,14 @@ impl LLMProvider {
             LLMProvider::OpenAI => "OpenAI",
         }
     }
+    
+    pub fn from_str(s: &str) -> Option<Self> {
+        match s {
+            "Claude" => Some(LLMProvider::Claude),
+            "OpenAI" => Some(LLMProvider::OpenAI),
+            _ => None,
+        }
+    }
 
     pub fn default_model(&self) -> String {
         match self {
@@ -199,9 +207,10 @@ impl Default for Settings {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum AppMode {
     Chat,
+    Terminal,
     Settings,
 }
 
@@ -276,7 +285,8 @@ impl App {
 
     pub fn toggle_mode(&mut self) {
         self.mode = match self.mode {
-            AppMode::Chat => AppMode::Settings,
+            AppMode::Chat => AppMode::Terminal,
+            AppMode::Terminal => AppMode::Settings,
             AppMode::Settings => AppMode::Chat,
         };
     }

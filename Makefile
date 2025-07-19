@@ -93,31 +93,74 @@ deps:
 	cargo fetch
 
 # Display help
+# Model discovery commands
+.PHONY: models-list models-check models-best models-info
+models-list:
+	@echo "📡 Fetching latest models from APIs..."
+	cargo run --bin update_models list
+
+models-check:
+	@echo "🔍 Checking for new models..."
+	cargo run --bin update_models check
+
+models-best:
+	@echo "🏆 Finding best coding model..."
+	cargo run --bin update_models best
+
+models-info:
+	@echo "📋 Current Model Information:"
+	@echo ""
+	@echo "🥇 Default (Best for Coding):"
+	@echo "   Claude 3.5 Sonnet - Anthropic's most capable coding model"
+	@echo "   • Excellent at code generation, debugging, and explanations"
+	@echo "   • Supports all major programming languages"
+	@echo "   • 200K context window"
+	@echo ""
+	@echo "⚡ Fastest Option:"
+	@echo "   Claude 3.5 Haiku - Latest fast model from Anthropic"
+	@echo "   • Quick responses while maintaining quality"
+	@echo "   • Good for code reviews and quick questions"
+	@echo ""
+	@echo "💰 Budget-Friendly:"
+	@echo "   GPT-4o Mini - Cost-effective option from OpenAI"
+	@echo "   • Good performance at lower cost"
+	@echo "   • Suitable for most coding tasks"
+
 .PHONY: help
 help:
 	@echo "🚀 LLM Terminal - Cross-platform Make Commands"
 	@echo "=============================================="
 	@echo ""
 	@echo "Build commands:"
-	@echo "  make build     - Build release version"
-	@echo "  make dev       - Build debug version"
-	@echo "  make clean     - Clean build artifacts"
+	@echo "  make build       - Build release version"
+	@echo "  make dev         - Build debug version"
+	@echo "  make clean       - Clean build artifacts"
 	@echo ""
 	@echo "Run commands:"
-	@echo "  make run       - Build and run application"
-	@echo "  make run-dev   - Run from source (development)"
+	@echo "  make run         - Build and run application"
+	@echo "  make run-dev     - Run from source (development)"
+	@echo ""
+	@echo "Model Discovery:"
+	@echo "  make models-list - List all available models from APIs"
+	@echo "  make models-check- Check for new models"
+	@echo "  make models-best - Show best model for coding"
+	@echo "  make models-info - Show model information (no API calls)"
 	@echo ""
 	@echo "Development commands:"
-	@echo "  make test      - Run tests"
-	@echo "  make check     - Check code (linting)"
-	@echo "  make format    - Format code"
+	@echo "  make test        - Run tests"
+	@echo "  make check       - Check code (linting)"
+	@echo "  make format      - Format code"
 	@echo ""
 	@echo "Setup commands:"
-	@echo "  make setup     - Run interactive setup"
-	@echo "  make deps      - Install dependencies"
+	@echo "  make setup       - Run interactive setup"
+	@echo "  make deps        - Install dependencies"
 	@echo ""
 	@echo "Other commands:"
-	@echo "  make help      - Show this help message"
+	@echo "  make help        - Show this help message"
+	@echo ""
+	@echo "Environment Variables:"
+	@echo "  ANTHROPIC_API_KEY  - Your Claude API key"
+	@echo "  OPENAI_API_KEY     - Your OpenAI API key"
 	@echo ""
 	@echo "Platform: $(shell uname -s 2>/dev/null || echo Windows)"
 	@echo "Executable: $(EXECUTABLE_PATH)"

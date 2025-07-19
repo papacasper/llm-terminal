@@ -1,7 +1,7 @@
-use crate::code_executor::CodeExecutor;
 use crate::config::Config;
 use crate::llm::{ClaudeClient, LLMClient, OpenAIClient};
 use crate::models::{App, AppMode, LLMProvider, Message};
+use crate::terminal::TerminalEmulator;
 use anyhow::{anyhow, Result};
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use std::sync::Arc;
@@ -10,7 +10,6 @@ use tokio::sync::mpsc;
 pub struct AppState {
     pub app: App,
     pub llm_clients: Vec<Arc<dyn LLMClient>>,
-    pub code_executor: CodeExecutor,
 }
 
 impl AppState {
@@ -26,7 +25,6 @@ impl AppState {
         Self {
             app: app_with_settings,
             llm_clients,
-            code_executor: CodeExecutor::new(30), // 30 second timeout
         }
     }
 
@@ -47,6 +45,7 @@ impl AppState {
     pub fn handle_key_event(&mut self, key: KeyEvent) -> Result<()> {
         match self.app.mode {
             AppMode::Chat => self.handle_chat_key_event(key),
+            AppMode::Terminal => self.handle_terminal_key_event(key),
             AppMode::Settings => self.handle_settings_key_event(key),
         }
     }
@@ -87,6 +86,22 @@ impl AppState {
             }
             KeyCode::Char(c) => {
                 self.app.input_buffer.push(c);
+            }
+            _ => {}
+        }
+        Ok(())
+    }
+
+    fn handle_terminal_key_event(&mut self, key: KeyEvent) -> Result<()> {
+        match key.code {
+            KeyCode::Char('q') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                self.app.quit();
+            }
+            KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                self.app.quit();
+            }
+            KeyCode::Char(',') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                self.app.toggle_mode();
             }
             _ => {}
         }

@@ -1,6 +1,16 @@
 # LLM Terminal
 
-A modern, Warp-inspired **cross-platform** terminal interface for chatting with multiple LLM providers (Claude and OpenAI). Built with Rust and featuring tabs, block-based conversations, and a professional terminal UI that works seamlessly across Windows, macOS, and Linux.
+A modern, Warp-inspired **cross-platform** desktop terminal emulator for chatting with multiple LLM providers (Claude and OpenAI). Built with Rust and featuring tabs, block-based conversations, and a professional GUI interface that works seamlessly across Windows, macOS, and Linux.
+
+## 🎯 **CONVERSION COMPLETE: TUI → GUI Desktop App**
+
+This application has been successfully converted from a **Terminal UI (TUI)** application that ran inside existing terminals to a **standalone desktop GUI application** with its own built-in terminal emulator.
+
+### What Changed:
+- **Before**: Used `ratatui` + `crossterm` for terminal-based UI
+- **After**: Uses `egui` + `eframe` for native desktop GUI
+- **Interface**: Now opens as a desktop window instead of running in terminal
+- **Features**: Maintains all original functionality in a modern GUI
 
 ## 🌟 Features
 
