@@ -5,5 +5,4 @@ pub mod context;
 pub mod llm;
 pub mod models;
 pub mod terminal;
-pub mod ui;
 pub mod workflows;
