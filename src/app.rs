@@ -1,7 +1,6 @@
 use crate::config::Config;
 use crate::llm::{ClaudeClient, LLMClient, OpenAIClient};
 use crate::models::{App, AppMode, LLMProvider, Message};
-use crate::terminal::TerminalEmulator;
 use anyhow::{anyhow, Result};
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use std::sync::Arc;
@@ -16,7 +15,7 @@ impl AppState {
     pub fn new() -> Self {
         let app = App::new();
         let settings = Config::load_settings();
-        
+
         let mut app_with_settings = app;
         app_with_settings.settings = settings;
 
@@ -42,6 +41,7 @@ impl AppState {
         clients
     }
 
+    #[allow(dead_code)]
     pub fn handle_key_event(&mut self, key: KeyEvent) -> Result<()> {
         match self.app.mode {
             AppMode::Chat => self.handle_chat_key_event(key),
@@ -50,6 +50,7 @@ impl AppState {
         }
     }
 
+    #[allow(dead_code)]
     fn handle_chat_key_event(&mut self, key: KeyEvent) -> Result<()> {
         match key.code {
             KeyCode::Char('q') if key.modifiers.contains(KeyModifiers::CONTROL) => {
@@ -92,6 +93,7 @@ impl AppState {
         Ok(())
     }
 
+    #[allow(dead_code)]
     fn handle_terminal_key_event(&mut self, key: KeyEvent) -> Result<()> {
         match key.code {
             KeyCode::Char('q') if key.modifiers.contains(KeyModifiers::CONTROL) => {
@@ -108,6 +110,7 @@ impl AppState {
         Ok(())
     }
 
+    #[allow(dead_code)]
     fn handle_settings_key_event(&mut self, key: KeyEvent) -> Result<()> {
         match key.code {
             KeyCode::Char('q') if key.modifiers.contains(KeyModifiers::CONTROL) => {
@@ -127,10 +130,13 @@ impl AppState {
         Ok(())
     }
 
+    #[allow(dead_code)]
     fn send_message(&mut self, content: String) -> Result<()> {
         // Get provider, model, and add user message
         let (provider, model, messages) = {
-            let current_tab = self.app.current_tab_mut()
+            let current_tab = self
+                .app
+                .current_tab_mut()
                 .ok_or_else(|| anyhow!("No current tab"))?;
 
             // Add user message
@@ -138,7 +144,11 @@ impl AppState {
             current_tab.add_message(user_message);
             current_tab.set_waiting(true);
 
-            (current_tab.provider.clone(), current_tab.model.clone(), current_tab.messages.clone())
+            (
+                current_tab.provider.clone(),
+                current_tab.model.clone(),
+                current_tab.messages.clone(),
+            )
         };
 
         // Find the appropriate client for this tab's provider
@@ -158,9 +168,11 @@ impl AppState {
         Ok(())
     }
 
-
+    #[allow(dead_code)]
     pub async fn handle_llm_response(&mut self, response: Result<String>) -> Result<()> {
-        let current_tab = self.app.current_tab_mut()
+        let current_tab = self
+            .app
+            .current_tab_mut()
             .ok_or_else(|| anyhow!("No current tab"))?;
 
         current_tab.set_waiting(false);
@@ -179,13 +191,18 @@ impl AppState {
         Ok(())
     }
 
-
     pub fn find_client_for_provider(&self, provider: &LLMProvider) -> Result<Arc<dyn LLMClient>> {
         self.llm_clients
             .iter()
             .find(|client| client.provider() == *provider)
             .cloned()
             .ok_or_else(|| anyhow!("No client available for provider: {:?}", provider))
+    }
+}
+
+impl Default for AppState {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -203,12 +220,12 @@ mod tests {
     #[test]
     fn test_input_handling() {
         let mut app_state = AppState::new();
-        
+
         // Test character input
         let key = KeyEvent::new(KeyCode::Char('h'), KeyModifiers::NONE);
         app_state.handle_key_event(key).unwrap();
         assert_eq!(app_state.app.input_buffer, "h");
-        
+
         // Test backspace
         let key = KeyEvent::new(KeyCode::Backspace, KeyModifiers::NONE);
         app_state.handle_key_event(key).unwrap();

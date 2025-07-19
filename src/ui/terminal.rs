@@ -1,4 +1,4 @@
-use crate::terminal::{TerminalEmulator};
+use crate::terminal::emulator::TerminalEmulator;
 use crate::terminal::emulator::{TerminalLine, TerminalLineType};
 use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},

@@ -109,6 +109,12 @@ impl AgentManager {
     }
 }
 
+impl Default for AgentManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

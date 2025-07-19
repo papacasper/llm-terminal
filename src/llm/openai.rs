@@ -1,4 +1,4 @@
-use super::client::{HttpLLMClient, LLMClient, messages_to_api_format};
+use super::client::{messages_to_api_format, HttpLLMClient, LLMClient};
 use crate::models::{LLMProvider, Message};
 use anyhow::{anyhow, Context, Result};
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, CONTENT_TYPE};
@@ -38,7 +38,8 @@ impl OpenAIClient {
             "temperature": 0.7
         });
 
-        let response = self.http_client
+        let response = self
+            .http_client
             .client()
             .post("https://api.openai.com/v1/chat/completions")
             .headers(headers)
@@ -65,7 +66,7 @@ impl OpenAIClient {
         // Extract the content from OpenAI's response format
         let content = response_json["choices"]
             .as_array()
-            .and_then(|arr| arr.get(0))
+            .and_then(|arr| arr.first())
             .and_then(|obj| obj["message"]["content"].as_str())
             .ok_or_else(|| anyhow!("Invalid response format from OpenAI API"))?;
 
@@ -102,10 +103,10 @@ mod tests {
     fn test_create_headers() {
         let client = OpenAIClient::new("test-key".to_string());
         let headers = client.create_headers().unwrap();
-        
+
         assert!(headers.contains_key(AUTHORIZATION));
         assert!(headers.contains_key(CONTENT_TYPE));
-        
+
         let auth_header = headers.get(AUTHORIZATION).unwrap().to_str().unwrap();
         assert!(auth_header.starts_with("Bearer "));
     }
