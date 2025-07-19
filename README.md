@@ -295,6 +295,9 @@ The application is designed for extensibility:
 4. Add tests if applicable
 5. Submit a pull request
 
+## Continuous Integration
+The GitHub Actions workflow runs formatting, linting and tests on every push. Please run `cargo fmt --all`, `cargo clippy` and `cargo test` locally before opening a PR. See `AGENTS.md` for details.
+
 ## License
 
 This project is licensed under the MIT License.

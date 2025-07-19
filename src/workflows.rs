@@ -1,4 +1,4 @@
-use crate::terminal::TerminalEmulator;
+use crate::terminal::emulator::TerminalEmulator;
 use anyhow::Result;
 
 pub struct Workflow {
@@ -25,7 +25,7 @@ impl Workflow {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::terminal::TerminalEmulator;
+    use crate::terminal::emulator::TerminalEmulator;
 
     #[tokio::test]
     async fn test_workflow_run_empty() {

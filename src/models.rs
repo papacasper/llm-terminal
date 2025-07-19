@@ -1,5 +1,7 @@
+#![allow(dead_code)]
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use std::str::FromStr;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -33,14 +35,6 @@ impl LLMProvider {
         }
     }
 
-    pub fn from_str(s: &str) -> Option<Self> {
-        match s {
-            "Claude" => Some(LLMProvider::Claude),
-            "OpenAI" => Some(LLMProvider::OpenAI),
-            _ => None,
-        }
-    }
-
     pub fn default_model(&self) -> String {
         match self {
             // Claude 3.5 Sonnet is currently the best for coding tasks
@@ -67,6 +61,18 @@ impl LLMProvider {
                 OpenAIModel::GPT4oMini.model_id(),  // Cost-effective
                 OpenAIModel::GPT35Turbo.model_id(), // Legacy, still capable
             ],
+        }
+    }
+}
+
+impl FromStr for LLMProvider {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Claude" => Ok(LLMProvider::Claude),
+            "OpenAI" => Ok(LLMProvider::OpenAI),
+            _ => Err(()),
         }
     }
 }
@@ -172,10 +178,12 @@ impl ChatTab {
         }
     }
 
+    #[allow(dead_code)]
     pub fn set_model(&mut self, model: String) {
         self.model = model;
     }
 
+    #[allow(dead_code)]
     pub fn toggle_code_execution(&mut self) {
         self.code_execution_enabled = !self.code_execution_enabled;
     }
@@ -184,6 +192,7 @@ impl ChatTab {
         self.messages.push(message);
     }
 
+    #[allow(dead_code)]
     pub fn set_waiting(&mut self, waiting: bool) {
         self.is_waiting = waiting;
     }
@@ -294,5 +303,11 @@ impl App {
 
     pub fn quit(&mut self) {
         self.should_quit = true;
+    }
+}
+
+impl Default for App {
+    fn default() -> Self {
+        Self::new()
     }
 }

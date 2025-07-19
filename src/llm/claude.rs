@@ -1,4 +1,4 @@
-use super::client::{HttpLLMClient, LLMClient, messages_to_api_format};
+use super::client::{messages_to_api_format, HttpLLMClient, LLMClient};
 use crate::models::{LLMProvider, Message};
 use anyhow::{anyhow, Context, Result};
 use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE};
@@ -35,7 +35,8 @@ impl ClaudeClient {
             "messages": api_messages
         });
 
-        let response = self.http_client
+        let response = self
+            .http_client
             .client()
             .post("https://api.anthropic.com/v1/messages")
             .headers(headers)
@@ -62,7 +63,7 @@ impl ClaudeClient {
         // Extract the content from Claude's response format
         let content = response_json["content"]
             .as_array()
-            .and_then(|arr| arr.get(0))
+            .and_then(|arr| arr.first())
             .and_then(|obj| obj["text"].as_str())
             .ok_or_else(|| anyhow!("Invalid response format from Claude API"))?;
 
@@ -99,7 +100,7 @@ mod tests {
     fn test_create_headers() {
         let client = ClaudeClient::new("test-key".to_string());
         let headers = client.create_headers().unwrap();
-        
+
         assert!(headers.contains_key("x-api-key"));
         assert!(headers.contains_key("anthropic-version"));
         assert!(headers.contains_key(CONTENT_TYPE));
