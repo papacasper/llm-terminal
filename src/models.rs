@@ -10,11 +10,11 @@ pub enum LLMProvider {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum ClaudeModel {
-    Sonnet35,      // Latest Claude 3.5 Sonnet (best for coding)
-    Haiku35,       // Claude 3.5 Haiku (faster, still capable)
-    Opus3,         // Claude 3 Opus (most capable for complex tasks)
-    Sonnet3,       // Claude 3 Sonnet (good balance)
-    Haiku3,        // Claude 3 Haiku (fastest, lighter tasks)
+    Sonnet35, // Latest Claude 3.5 Sonnet (best for coding)
+    Haiku35,  // Claude 3.5 Haiku (faster, still capable)
+    Opus3,    // Claude 3 Opus (most capable for complex tasks)
+    Sonnet3,  // Claude 3 Sonnet (good balance)
+    Haiku3,   // Claude 3 Haiku (fastest, lighter tasks)
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -32,7 +32,7 @@ impl LLMProvider {
             LLMProvider::OpenAI => "OpenAI",
         }
     }
-    
+
     pub fn from_str(s: &str) -> Option<Self> {
         match s {
             "Claude" => Some(LLMProvider::Claude),
@@ -54,18 +54,18 @@ impl LLMProvider {
         match self {
             // Ordered by coding capability and recency (best first)
             LLMProvider::Claude => vec![
-                ClaudeModel::Sonnet35.model_id(),  // Best for coding (latest)
-                ClaudeModel::Haiku35.model_id(),   // Fast and capable (latest)
-                ClaudeModel::Opus3.model_id(),     // Most capable for complex tasks
-                ClaudeModel::Sonnet3.model_id(),   // Good balance
-                ClaudeModel::Haiku3.model_id(),    // Legacy fast model
+                ClaudeModel::Sonnet35.model_id(), // Best for coding (latest)
+                ClaudeModel::Haiku35.model_id(),  // Fast and capable (latest)
+                ClaudeModel::Opus3.model_id(),    // Most capable for complex tasks
+                ClaudeModel::Sonnet3.model_id(),  // Good balance
+                ClaudeModel::Haiku3.model_id(),   // Legacy fast model
             ],
             // Ordered by coding capability (best first)
             LLMProvider::OpenAI => vec![
-                OpenAIModel::GPT4o.model_id(),     // Best overall
-                OpenAIModel::GPT4Turbo.model_id(), // Good for complex tasks
-                OpenAIModel::GPT4oMini.model_id(), // Cost-effective
-                OpenAIModel::GPT35Turbo.model_id(),// Legacy, still capable
+                OpenAIModel::GPT4o.model_id(),      // Best overall
+                OpenAIModel::GPT4Turbo.model_id(),  // Good for complex tasks
+                OpenAIModel::GPT4oMini.model_id(),  // Cost-effective
+                OpenAIModel::GPT35Turbo.model_id(), // Legacy, still capable
             ],
         }
     }
@@ -77,7 +77,7 @@ impl ClaudeModel {
             // Latest models (as of 2024-2025)
             ClaudeModel::Sonnet35 => "claude-3-5-sonnet-20241022".to_string(),
             ClaudeModel::Haiku35 => "claude-3-5-haiku-20241022".to_string(),
-            
+
             // Claude 3 series (stable)
             ClaudeModel::Opus3 => "claude-3-opus-20240229".to_string(),
             ClaudeModel::Sonnet3 => "claude-3-sonnet-20240229".to_string(),
@@ -149,7 +149,6 @@ impl Message {
     }
 }
 
-
 #[derive(Debug, Clone)]
 pub struct ChatTab {
     pub title: String,
@@ -195,6 +194,7 @@ pub struct Settings {
     pub claude_api_key: Option<String>,
     pub openai_api_key: Option<String>,
     pub default_provider: LLMProvider,
+    pub telemetry_enabled: bool,
 }
 
 impl Default for Settings {
@@ -203,6 +203,7 @@ impl Default for Settings {
             claude_api_key: None,
             openai_api_key: None,
             default_provider: LLMProvider::Claude,
+            telemetry_enabled: false,
         }
     }
 }

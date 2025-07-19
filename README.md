@@ -18,6 +18,10 @@ This application has been successfully converted from a **Terminal UI (TUI)** ap
 - **🐚 Universal Terminal Support**: Compatible with cmd, PowerShell, bash, zsh, fish, and more
 - **📑 Multi-tab Interface**: Create and manage multiple conversation tabs
 - **🤖 Multiple LLM Providers**: Support for both Anthropic Claude and OpenAI GPT-4
+- **👥 Multi-Agent Tasks**: Run several agents in parallel for complex workflows
+- **📂 Context Loader**: Provide codebase context to AI agents automatically
+- **🔁 Scriptable Workflows**: Define reusable sets of terminal commands
+- **🔒 Telemetry Toggle**: Control optional usage reporting
 - **🎨 Modern Terminal UI**: Clean, professional interface using ratatui
 - **⚡ Real-time Async Communication**: Non-blocking API calls with response handling
 - **⌨️ Keyboard Shortcuts**: Power-user friendly navigation and controls
@@ -101,6 +105,17 @@ set -x ANTHROPIC_API_KEY "your-claude-api-key"
 set -x OPENAI_API_KEY "your-openai-api-key"
 ```
 
+### API Usage
+
+`llm-terminal` communicates directly with the official APIs from Anthropic and OpenAI:
+
+- **Claude API**: `https://api.anthropic.com/v1/messages`
+- **OpenAI API**: `https://api.openai.com/v1/chat/completions`
+
+Make sure your API keys have access to these endpoints. The selected model name is passed in each request, so you can use any model your key has permission for.
+
+# Optional telemetry
+export LLM_TERMINAL_TELEMETRY=false
 ### Configuration File
 
 Alternatively, create a configuration file at:
