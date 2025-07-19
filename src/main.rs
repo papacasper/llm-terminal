@@ -3,7 +3,6 @@ mod config;
 mod llm;
 mod models;
 mod terminal;
-mod ui;
 
 use anyhow::Result;
 use app::AppState;
